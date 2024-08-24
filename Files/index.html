@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Tracking App</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body {
+            background-color: rgb(156, 78, 235);
+        }
+
+        header {
+            background-color: #FFD700;
+            /* Gold */
+            color: black;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3)
+        }
+
+        .container {
+            /* border:1px solid black; */
+            height: 765px;
+            /* width:99.5%; */
+            display: grid;
+            grid-template-areas: "rep rep rep inp";
+            /* grid-row-gap: 10px; */
+        }
+
+        label {
+            font-size: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .item {
+            margin: 35px;
+            background-color: whitesmoke;
+            box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .report {
+            grid-area: rep;
+            overflow-y: scroll;
+   
+        }
+
+        .input {
+            grid-area: inp;
+            /* border:1px solid red; */
+        }
+
+        .form {
+            /* border:1px solid red; */
+            display: flex;
+            flex-flow: column;
+
+            /* gap: 36px; */
+            /* justify-content:space-between; */
+            align-items: center;
+            height: 635px;
+            margin: 10px;
+
+        }
+
+        .box {
+            width: 270px;
+            margin: 30px;
+            height: 38px;
+            font-size: 23px;
+            text-align: center;
+        }
+
+        #add {
+            background: linear-gradient(45deg, #ff6f61, #ff9966);
+            /* Gradient colors */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #add:hover {
+            background: linear-gradient(45deg, #ff9966, #ff6f61);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+
+
+        .content {
+            /* border: 1px solid black; */
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .property {
+            height: 50px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+
+        }
+
+        .property1 {
+            text-align: center;
+            /* height:35px; */
+        }
+
+        .delete-btn {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>Money Tracking App</header>
+
+    <div class="container">
+
+        <section class="item report">
+            <h1>Money Report</h1>
+
+            <div class="content">
+                <table border="1" cellspacing="0" width="950px">
+                    <thead class="property">
+                        <td>Category</td>
+                        <td>Amount</td>
+                        <td>Information</td>
+                        <td>Date</td>
+                        <td>Deletion</td>
+                    </thead>
+                    <tbody id="content-table">
+                    </tbody>
+                    <tfoot class="property">
+                        <td>Total:</td>
+                        <td colspan="4" id="total-amount" style="text-align: center;">0</td>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+        <section class="item input">
+
+            <h1 id="input">Input Transaction Information</h1>
+
+            <div class="form">
+
+                <form action="/add" method="post">
+                
+
+                        <label for="category">Category &nbsp; &nbsp; </label>
+                        <select id="category" name="Category" class="items box" required>
+                            <option value="credit">Credit</option>
+                            <option value="debit">Debit</option>
+                        </select>
+                        <br>
+                        <br>
+                        <label for="amount" id="a">Amount &nbsp; &nbsp; &nbsp;</label>
+                        <input type="number" name="Amount" id="amount" class="items box" required>
+                        <br>
+                        <br>
+                        <label for="description">Description</label>
+                        <input type="text" name="Description" class="items box" id="description" required>
+                        <br>
+                        <br>
+                        <label for="date">Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</label>
+                        <input type="date" name="Date" class="items box" id="date" required> 
+                        <br>
+                        <br>
+                        <button type="submit" class="items box" id="add">Add</button>
+                    
+                </form>
+            </div>
+
+
+            <script>
+                var submit = document.getElementById("add");
+
+
+
+                submit.addEventListener('click', function () {
+
+
+                    // value taken from user to display in report.
+                    const category_input = document.getElementById("category").value;
+                    const amount_input = parseInt(document.getElementById("amount").value);
+                    const desc_input = document.getElementById("description").value;
+                    const date_input = document.getElementById("date").value;
+
+
+
+                    var totalAmount_input = document.getElementById("total-amount");
+                    var totalAmount = parseInt(totalAmount_input.innerText);
+
+                    if (date_input === "" || isNaN(amount_input)) {
+                        alert("All Fields are required!")
+                        return 0;
+                    }
+
+
+
+
+
+                    //functionality to display the retrieved content.
+                    const tablearea = document.getElementById("content-table");
+                    const tablerow = tablearea.insertRow();
+                    var cell1 = tablerow.insertCell();
+                    var cell2 = tablerow.insertCell();
+                    var cell3 = tablerow.insertCell();
+                    var cell4 = tablerow.insertCell();
+                    var cell5 = tablerow.insertCell();
+
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = "Delete";
+                    deleteButton.classList.add("delete-btn");
+
+
+
+                    deleteButton.addEventListener("click", () => {
+                        if (category_input === "credit") {
+                            totalAmount -= amount_input;
+                        }
+                        if (category_input === "debit") {
+                            totalAmount += amount_input;
+                        }
+
+
+                        totalAmount_input.innerHTML = totalAmount;
+                        tablearea.removeChild(tablerow);
+                    })
+
+
+                    cell1.innerHTML = category_input;
+                    cell2.innerHTML = amount_input;
+                    cell3.innerHTML = desc_input;
+                    cell4.innerHTML = date_input;
+                    cell5.appendChild(deleteButton);
+
+
+
+                    
+
+
+
+                    if (category_input === "credit") {
+                        totalAmount += amount_input;
+                    }
+                    if (category_input === "debit") {
+                        totalAmount -= amount_input;
+                    }
+
+                  
+
+
+                    totalAmount_input.innerHTML = totalAmount;
+                    
+                });
+
+
+            </script>
+
+
+        </section>
+    </div>
+</body>
+
+</html>
